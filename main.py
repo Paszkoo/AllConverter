@@ -3,7 +3,9 @@ from tkinter import ttk, filedialog, messagebox
 from PIL import Image
 import cairosvg
 import os
-from moviepy.editor import VideoFileClip
+import ffmpeg
+from tkComponents.Tooltip import Tooltip
+from converters.videoConverter import create_video_tab
 
 
 def convert_image(input_file, output_format):
@@ -28,31 +30,6 @@ def convert_image(input_file, output_format):
         messagebox.showinfo("Success", f"File saved as: {output_file}")
 
 
-def convert_video(input_file, output_format):
-    input_ext = os.path.splitext(input_file)[1].lower()
-    output_file = filedialog.asksaveasfilename(
-        defaultextension=output_format,
-        filetypes=[
-            (f"{output_format.upper()} files", f"*{output_format}"),
-            ("All files", "*.*")
-        ]
-    )
-
-    if not output_file:
-        return
-    if input_ext == ".avi"and output_format == ".mp4":
-        video = VideoFileClip(input_file)
-        video.write_videofile(output_file, codec="libx264")
-    elif input_ext == ".mp4"and output_format == ".avi":
-        video = VideoFileClip(input_file)
-        video.write_videofile(output_file, codec="png")
-    else:
-        messagebox.showerror("Error", "This video conversion is not supported.")
-        return
-
-    messagebox.showinfo("Success", f"File saved as: {output_file}")
-
-
 def select_file(entry):
     file_path = filedialog.askopenfilename()
     if file_path:
@@ -63,6 +40,13 @@ def select_file(entry):
 def create_image_tab(tab_control):
     tab_image = ttk.Frame(tab_control)
     tab_control.add(tab_image, text="Image Conversion")
+    messages = {
+        ".png": "MP4 - Popularny format używany w streamingu i urządzeniach mobilnych.",
+        ".jpg": "AVI - Starszy format wideo, nadal używany w systemach Windows.",
+        ".jpeg": "MOV - Format Apple, często używany w edycji wideo.",
+        ".ico": "MKV - Format kontenera obsługujący wiele ścieżek audio i napisów.",
+        ".svg": "WebM - Format zoptymalizowany do użytku w internecie."
+    }
 
     # Input file
     ttk.Label(tab_image, text="Input file:").grid(column=0, row=0, padx=10, pady=10)
@@ -79,42 +63,15 @@ def create_image_tab(tab_control):
 
     formats = [".png", ".jpg", ".jpeg", ".ico", ".svg"]
 
-    for i, format in enumerate(formats):
-        ttk.Radiobutton(format_frame, text=format.upper(), variable=output_format, value=format).grid(column=i, row=0,
-                                                                                                      padx=15, pady=10)
+    # Dodajemy przyciski radiowe i tooltipy
+    for i, ext in enumerate(formats):
+        rb = ttk.Radiobutton(format_frame, text=ext, variable=output_format, value=ext)
+        rb.grid(column=i, row=0, padx=15, pady=10)
+        Tooltip(rb, messages[ext])
 
     # Convert button
     ttk.Button(tab_image, text="Convert",
                command=lambda: convert_image(input_file_entry.get(), output_format.get())).grid(column=0, row=2,
-                                                                                                columnspan=3, pady=20)
-
-
-def create_video_tab(tab_control):
-    tab_video = ttk.Frame(tab_control)
-    tab_control.add(tab_video, text="Video Conversion")
-
-    # Input file
-    ttk.Label(tab_video, text="Input file:").grid(column=0, row=0, padx=10, pady=10)
-    input_file_entry = ttk.Entry(tab_video, width=40)
-    input_file_entry.grid(column=1, row=0, padx=10, pady=10)
-    ttk.Button(tab_video, text="Select file", command=lambda: select_file(input_file_entry)).grid(column=2, row=0,
-                                                                                                  padx=10, pady=10)
-
-    # Output format
-    format_frame = ttk.LabelFrame(tab_video, text="Output format:")
-    format_frame.grid(column=0, row=1, columnspan=3, padx=10, pady=10, sticky="ew")
-
-    output_format = tk.StringVar(value=".mp4")
-
-    formats = [".mp4", ".avi"]
-
-    for i, format in enumerate(formats):
-        ttk.Radiobutton(format_frame, text=format.upper(), variable=output_format, value=format).grid(column=i, row=0,
-                                                                                                      padx=15, pady=10)
-
-    # Convert button
-    ttk.Button(tab_video, text="Convert",
-               command=lambda: convert_video(input_file_entry.get(), output_format.get())).grid(column=0, row=2,
                                                                                                 columnspan=3, pady=20)
 
 
