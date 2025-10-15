@@ -1,4 +1,4 @@
-# tooltip.py
+# tooltip.py - text on hover
 import tkinter as tk
 
 

@@ -1,7 +1,9 @@
 # AllConverter - Windows app based on python
 
-### Init - Converting images like .jpg, .jpeg, .png, .svg, .ico
-#
+### Can convert images
+(".png", ".jpg", ".jpeg", ".ico", ".svg") 
+### and videos
+(".mp4", ".avi", ".mov", ".mkv", ".webm") with resolution and bitrate settings
 #
 ### Dependencies:
 #### <div style="margin-left: 20px;">1. Installation:</div>

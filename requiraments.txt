@@ -1,3 +1,4 @@
 pillow
 cairosvg
 ffmpeg-python
+tkinter

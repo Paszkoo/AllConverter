@@ -2,7 +2,9 @@ import tkinter as tk
 from tkinter import filedialog, scrolledtext
 import ffmpeg
 
-
+############################################################################
+### Script for File testing. It shows basic information about selected file
+############################################################################
 def check_file(input_file, output_text):
     # Sprawdzenie czy plik istnieje i pobranie jego informacji
     try:
@@ -25,6 +27,14 @@ def select_input_file(entry_widget):
 
 
 def create_gui():
+    grid_obj = {
+        "column": 0,
+        "row": 2,
+        "columnspan": 3,
+        "padx": 10,
+        "pady": 10
+    }
+
     root = tk.Tk()
     root.title("File Checker")
 
@@ -40,12 +50,10 @@ def create_gui():
     output_text.grid(column=0, row=1, columnspan=3, padx=10, pady=10)
 
     # Check file button
-    tk.Button(root, text="Check File", command=lambda: check_file(input_file_entry.get(), output_text)).grid(column=0,
-                                                                                                             row=2,
-                                                                                                             columnspan=3,
-                                                                                                             padx=10,
-                                                                                                             pady=10)
-
+    (tk.Button(
+        root, text="Check File",
+        command=lambda:
+            check_file(input_file_entry.get(), output_text)).grid(grid_obj))
     root.mainloop()
 
 
